@@ -11,7 +11,7 @@ write_topology_from_csv
 
 current=""
 index=0
-csv_rows | while IFS=, read -r name resname gro itp count charge; do
+while IFS=, read -r name resname gro itp count charge; do
   [[ -n "${name:-}" ]] || continue
   index=$((index + 1))
   next="$BUILD_DIR/insert_${index}_${name}.gro"
@@ -23,6 +23,6 @@ csv_rows | while IFS=, read -r name resname gro itp count charge; do
   fi
   current="$next"
   cp "$current" "$BUILD_DIR/system_unsolvated.gro"
-done
+done < <(csv_rows)
 
 printf 'Wrote %s\n' "$BUILD_DIR/system_unsolvated.gro"

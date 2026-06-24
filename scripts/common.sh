@@ -44,7 +44,7 @@ ensure_dirs() {
 
 csv_rows() {
   require_file "$MOLECULES_CSV"
-  tail -n +2 "$MOLECULES_CSV" | awk 'NF && $0 !~ /^#/'
+  tail -n +2 "$MOLECULES_CSV" | tr -d '\r' | awk 'NF && $0 !~ /^#/'
 }
 
 write_topology_from_csv() {
@@ -52,10 +52,10 @@ write_topology_from_csv() {
     printf '; Generated from inputs/molecules.csv\n\n'
     printf '#include "oplsaa.ff/forcefield.itp"\n\n'
     printf '; LigParGen solute topologies.\n'
-    csv_rows | while IFS=, read -r name resname gro itp count charge; do
+    while IFS=, read -r name resname gro itp count charge; do
       [[ -n "${name:-}" ]] || continue
       printf '#include "../%s"\n' "$itp"
-    done
+    done < <(csv_rows)
     printf '\n'
     printf '#include "oplsaa.ff/tip3p.itp"\n'
     printf '#include "oplsaa.ff/ions.itp"\n\n'
@@ -63,10 +63,10 @@ write_topology_from_csv() {
     printf 'PFAS and organic molecules in TIP3P water\n\n'
     printf '[ molecules ]\n'
     printf '; name      count\n'
-    csv_rows | while IFS=, read -r name resname gro itp count charge; do
+    while IFS=, read -r name resname gro itp count charge; do
       [[ -n "${name:-}" ]] || continue
       printf '%-10s %s\n' "$name" "$count"
-    done
+    done < <(csv_rows)
   } > "$TOPOLOGY"
 }
 

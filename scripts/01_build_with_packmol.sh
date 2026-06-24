@@ -32,7 +32,7 @@ done < <(csv_rows)
   printf 'filetype pdb\n'
   printf 'output system_unsolvated.pdb\n\n'
 
-  csv_rows | while IFS=, read -r name resname gro itp count charge; do
+  while IFS=, read -r name resname gro itp count charge; do
     [[ -n "${name:-}" ]] || continue
     printf 'structure %s\n' "${name}.pdb"
     printf '  number %s\n' "$count"
@@ -41,7 +41,7 @@ done < <(csv_rows)
       "$(awk "BEGIN {print $BOX_Y * 10}")" \
       "$(awk "BEGIN {print $BOX_Z * 10}")"
     printf 'end structure\n\n'
-  done
+  done < <(csv_rows)
 } > "$packmol_input"
 
 (cd "$BUILD_DIR" && "$PACKMOL" < "$packmol_input")
