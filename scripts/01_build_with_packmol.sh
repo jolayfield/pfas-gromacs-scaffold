@@ -20,10 +20,12 @@ unsolvated_gro="$BUILD_DIR/system_unsolvated.gro"
 # Convert each molecule .gro to .pdb before writing packmol.inp.
 # packmol.inp uses only basenames to stay within Packmol's 90-char
 # internal filename buffer; Packmol is run from BUILD_DIR to find them.
-csv_rows | while IFS=, read -r name resname gro itp count charge; do
+while IFS=, read -r name resname gro itp count charge; do
   [[ -n "${name:-}" ]] || continue
-  "$GMX" editconf -f "$SIM_DIR/$gro" -o "$BUILD_DIR/${name}.pdb" >/dev/null 2>&1
-done
+  printf 'Converting %s -> %s.pdb\n' "$gro" "$name"
+  "$GMX" editconf -f "$SIM_DIR/$gro" -o "$BUILD_DIR/${name}.pdb" > /dev/null \
+    || die "gmx editconf failed for $gro"
+done < <(csv_rows)
 
 {
   printf 'tolerance %s\n' "$PACKMOL_TOLERANCE"
