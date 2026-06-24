@@ -15,6 +15,10 @@ require_file "$BUILD_DIR/system_ions.gro"
 
 cd "$(dirname "$TOPOLOGY")"
 
+# Tracks the SGE job ID of the most recently submitted qgmx stage so the
+# next stage can pass -Hold_jid to chain jobs sequentially on the cluster.
+PREV_JOB_ID=""
+
 run_stage() {
   local stage="$1"
   local mdp="$2"
@@ -34,12 +38,26 @@ run_stage() {
   mkdir -p "$dir"
 
   if [[ "$USE_QGMX" == "1" ]]; then
-    "$QGMX" \
-      -f "$ROOT_DIR/mdp/$mdp" \
-      -c "$input_gro" \
-      -oc "$dir/$stage.gro" \
-      -p "$TOPOLOGY" \
+    local qgmx_args=(
+      -f "$ROOT_DIR/mdp/$mdp"
+      -c "$input_gro"
+      -oc "$dir/$stage.gro"
+      -p "$TOPOLOGY"
       -nt "$NPROCS"
+    )
+    [[ -n "$PREV_JOB_ID" ]] && qgmx_args+=(-Hold_jid "$PREV_JOB_ID")
+
+    local output
+    output=$("$QGMX" "${qgmx_args[@]}")
+    printf '%s\n' "$output"
+
+    # Parse SGE job ID from qsub-style "Your job 12345 ..." output.
+    PREV_JOB_ID=$(printf '%s\n' "$output" | grep -oE 'job [0-9]+' | grep -oE '[0-9]+' | head -1 || true)
+    if [[ -n "$PREV_JOB_ID" ]]; then
+      printf '[%s] submitted as SGE job %s\n' "$stage" "$PREV_JOB_ID"
+    else
+      printf '[%s] submitted (could not parse job ID — subsequent stages will not chain)\n' "$stage" >&2
+    fi
   else
     if [[ -n "$ref_gro" ]]; then
       "$GMX" grompp -f "$ROOT_DIR/mdp/$mdp" -c "$input_gro" -r "$ref_gro" \
