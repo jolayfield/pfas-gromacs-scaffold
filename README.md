@@ -16,10 +16,10 @@ Start here:
 scripts/01_build_with_packmol.sh
 ```
 
-or:
+or (alternative, GROMACS-only path):
 
 ```bash
-scripts/01_build_with_insert_molecules.sh
+scripts/01_alt_build_with_insert_molecules.sh
 ```
 
 Then solvate, ionize, minimize, equilibrate, and run short production:

@@ -1,0 +1,33 @@
+# GROMACS binary outputs
+*.tpr
+*.trr
+*.xtc
+*.edr
+*.cpt
+*.log
+
+# Generated coordinate and PDB files in build/
+build/*.gro
+build/*.pdb
+
+# Run outputs (keep directory structure via .gitkeep)
+runs/em/*
+runs/nvt/*
+runs/npt/*
+runs/production/*
+!runs/em/.gitkeep
+!runs/nvt/.gitkeep
+!runs/npt/.gitkeep
+!runs/production/.gitkeep
+
+# Simulation output directories (data lives here, not in version control)
+# Keep the simulations/ directory itself tracked via .gitkeep if created
+simulations/*/build/*.gro
+simulations/*/build/*.pdb
+simulations/*/runs/
+
+# macOS
+.DS_Store
+
+# Environment overrides (copy from .env.template)
+.env
