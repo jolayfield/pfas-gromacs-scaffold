@@ -47,6 +47,8 @@ run_stage() {
     )
     [[ -n "$PREV_JOB_ID" ]] && qgmx_args+=(-Hold_jid "$PREV_JOB_ID")
 
+    printf '[%s] command: %s %s\n' "$stage" "$QGMX" "${qgmx_args[*]}"
+
     local output
     output=$("$QGMX" "${qgmx_args[@]}")
     printf '%s\n' "$output"
