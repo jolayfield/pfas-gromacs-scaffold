@@ -56,3 +56,13 @@ SIM_DIR=simulations/pfoa-water-001 scripts/03_run_md_pipeline.sh
 ```
 
 Each simulation directory is self-contained: its `inputs/`, `topology/`, `build/`, and `runs/` subdirectories are independent from every other simulation. See `docs/multiple-simulations-management-plan.md` for naming conventions and layout details.
+
+## Running on an HPC cluster
+
+Set `USE_QGMX=1` to submit MD stages through the `qgmx` cluster wrapper instead of calling `gmx grompp` + `gmx mdrun` directly. `NPROCS` controls the `-nt` argument passed to `qgmx`.
+
+```bash
+USE_QGMX=1 NPROCS=8 SIM_DIR=simulations/pfoa-water-001 scripts/03_run_md_pipeline.sh
+```
+
+With `USE_QGMX=0` (the default), all stages run locally via standard GROMACS commands.
