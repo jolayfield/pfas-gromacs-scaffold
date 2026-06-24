@@ -11,14 +11,14 @@ build/*.gro
 build/*.pdb
 
 # Run outputs (keep directory structure via .gitkeep)
-runs/em/*
-runs/nvt/*
-runs/npt/*
-runs/production/*
-!runs/em/.gitkeep
-!runs/nvt/.gitkeep
-!runs/npt/.gitkeep
-!runs/production/.gitkeep
+runs/01_em/*
+runs/02_nvt/*
+runs/03_npt/*
+runs/04_production/*
+!runs/01_em/.gitkeep
+!runs/02_nvt/.gitkeep
+!runs/03_npt/.gitkeep
+!runs/04_production/.gitkeep
 
 # Simulation output directories (data lives here, not in version control)
 # Keep the simulations/ directory itself tracked via .gitkeep if created

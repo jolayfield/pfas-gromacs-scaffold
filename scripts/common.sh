@@ -39,7 +39,7 @@ require_command() {
 }
 
 ensure_dirs() {
-  mkdir -p "$BUILD_DIR" "$RUNS_DIR"/{em,nvt,npt,production} "$SIM_DIR/logs"
+  mkdir -p "$BUILD_DIR" "$RUNS_DIR"/{01_em,02_nvt,03_npt,04_production} "$SIM_DIR/logs"
 }
 
 csv_rows() {

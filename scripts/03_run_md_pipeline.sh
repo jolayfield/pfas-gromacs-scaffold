@@ -20,7 +20,16 @@ run_stage() {
   local mdp="$2"
   local input_gro="$3"
   local ref_gro="${4:-}"
-  local dir="$RUNS_DIR/$stage"
+
+  local dir_name
+  case "$stage" in
+    em)         dir_name="01_em" ;;
+    nvt)        dir_name="02_nvt" ;;
+    npt)        dir_name="03_npt" ;;
+    production) dir_name="04_production" ;;
+    *)          dir_name="$stage" ;;
+  esac
+  local dir="$RUNS_DIR/$dir_name"
 
   mkdir -p "$dir"
 
@@ -44,8 +53,8 @@ run_stage() {
 }
 
 run_stage em        minim.mdp "$BUILD_DIR/system_ions.gro"
-run_stage nvt       nvt.mdp   "$RUNS_DIR/em/em.gro"   "$RUNS_DIR/em/em.gro"
-run_stage npt       npt.mdp   "$RUNS_DIR/nvt/nvt.gro" "$RUNS_DIR/nvt/nvt.gro"
-run_stage production md.mdp   "$RUNS_DIR/npt/npt.gro"
+run_stage nvt       nvt.mdp   "$RUNS_DIR/01_em/em.gro"   "$RUNS_DIR/01_em/em.gro"
+run_stage npt       npt.mdp   "$RUNS_DIR/02_nvt/nvt.gro" "$RUNS_DIR/02_nvt/nvt.gro"
+run_stage production md.mdp   "$RUNS_DIR/03_npt/npt.gro"
 
-printf 'Production output prefix: %s\n' "$RUNS_DIR/production/production"
+printf 'Production output prefix: %s\n' "$RUNS_DIR/04_production/production"

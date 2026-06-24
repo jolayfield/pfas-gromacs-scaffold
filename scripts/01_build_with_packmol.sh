@@ -22,6 +22,7 @@ unsolvated_gro="$BUILD_DIR/system_unsolvated.gro"
 # internal filename buffer; Packmol is run from BUILD_DIR to find them.
 while IFS=, read -r name resname gro itp count charge; do
   [[ -n "${name:-}" ]] || continue
+  require_file "$SIM_DIR/$gro"
   printf 'Converting %s -> %s.pdb\n' "$gro" "$name"
   "$GMX" editconf -f "$SIM_DIR/$gro" -o "$BUILD_DIR/${name}.pdb" > /dev/null \
     || die "gmx editconf failed for $gro"
