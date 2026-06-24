@@ -1,0 +1,4 @@
+name,resname,gro,itp,count,charge
+PFAS1,PFA,inputs/ligpargen/pfas1.gro,inputs/ligpargen/pfas1.itp,10,-1
+ORG1,ORG,inputs/ligpargen/org1.gro,inputs/ligpargen/org1.itp,10,0
+

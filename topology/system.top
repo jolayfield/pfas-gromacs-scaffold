@@ -1,0 +1,23 @@
+; Generic OPLS-AA/TIP3P system topology for LigParGen solutes.
+; Update the #include paths and [ molecules ] section before running.
+
+#include "oplsaa.ff/forcefield.itp"
+
+; LigParGen solute topologies.
+; The scripts can regenerate this block from inputs/molecules.csv.
+#include "../inputs/ligpargen/pfas1.itp"
+#include "../inputs/ligpargen/org1.itp"
+
+; TIP3P water and ions from the selected GROMACS force-field directory.
+; Confirm these include names against your local GROMACS OPLS-AA installation.
+#include "oplsaa.ff/tip3p.itp"
+#include "oplsaa.ff/ions.itp"
+
+[ system ]
+PFAS and organic molecules in TIP3P water
+
+[ molecules ]
+; name      count
+PFAS1       10
+ORG1        10
+

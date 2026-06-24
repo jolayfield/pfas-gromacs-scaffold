@@ -1,0 +1,6 @@
+tolerance {{TOLERANCE}}
+filetype pdb
+output {{OUTPUT_PDB}}
+
+{{STRUCTURES}}
+
