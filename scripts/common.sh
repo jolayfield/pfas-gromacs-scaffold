@@ -21,6 +21,10 @@ BOX_X="${BOX_X:-6}"
 BOX_Y="${BOX_Y:-6}"
 BOX_Z="${BOX_Z:-6}"
 
+USE_QGMX="${USE_QGMX:-0}"
+NPROCS="${NPROCS:-1}"
+QGMX="${QGMX:-qgmx}"
+
 die() {
   printf 'ERROR: %s\n' "$*" >&2
   exit 1
@@ -64,6 +68,22 @@ write_topology_from_csv() {
       printf '%-10s %s\n' "$name" "$count"
     done
   } > "$TOPOLOGY"
+}
+
+write_provenance() {
+  local log_file="$SIM_DIR/sim.log"
+  {
+    printf '=== %s ===\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    printf 'script:   %s\n' "$0"
+    printf 'SIM_DIR:  %s\n' "$SIM_DIR"
+    printf 'GMX:      %s\n' "$GMX"
+    printf 'BOX:      %s x %s x %s nm\n' "$BOX_X" "$BOX_Y" "$BOX_Z"
+    printf 'ION_CONC: %s\n' "${ION_CONC:-0.15}"
+    printf 'USE_QGMX: %s  NPROCS: %s\n' "$USE_QGMX" "$NPROCS"
+    printf 'gmx:      %s\n' "$("$GMX" --version 2>&1 | grep -m1 'GROMACS version' || echo 'unknown')"
+    printf 'python:   %s\n' "$(python3 --version 2>&1 || echo 'unknown')"
+    printf '\n'
+  } >> "$log_file"
 }
 
 append_or_replace_molecule_count() {

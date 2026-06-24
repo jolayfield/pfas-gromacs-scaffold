@@ -37,6 +37,8 @@ ION_CONC=0.10 scripts/02_solvate_and_ionize.sh
 GMX=gmx scripts/03_run_md_pipeline.sh
 ```
 
+All supported variables are documented in `.env.template`. Copy it to `.env`, uncomment any overrides, and `source .env` before running — or export variables directly on the command line as shown above.
+
 The example `inputs/molecules.csv` intentionally points to placeholder files. Replace those rows before running a real system.
 
 For PFAS plus mixed organic solutes, the recommended default is Packmol for solute placement, then GROMACS for water and ions.

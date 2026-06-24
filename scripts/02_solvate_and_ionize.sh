@@ -7,6 +7,7 @@ PNAME="${PNAME:-NA}"
 NNAME="${NNAME:-CL}"
 
 ensure_dirs
+write_provenance
 require_command "$GMX"
 require_file "$TOPOLOGY"
 require_file "$BUILD_DIR/system_unsolvated.gro"

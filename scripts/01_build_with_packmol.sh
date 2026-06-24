@@ -5,6 +5,7 @@ PACKMOL="${PACKMOL:-packmol}"
 PACKMOL_TOLERANCE="${PACKMOL_TOLERANCE:-2.0}"
 
 ensure_dirs
+write_provenance
 require_command "$GMX"
 require_command "$PACKMOL"
 require_file "$MOLECULES_CSV"

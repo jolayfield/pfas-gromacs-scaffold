@@ -2,6 +2,7 @@
 source "$(dirname "$0")/common.sh"
 
 ensure_dirs
+write_provenance
 require_command "$GMX"
 require_file "$MOLECULES_CSV"
 
