@@ -43,7 +43,7 @@ run_stage() {
       -c "$input_gro"
       -oc "$dir/$stage.gro"
       -p "$TOPOLOGY"
-      -nt "$NPROCS"
+      -nt "$GMX_NPROCS"
     )
     [[ -n "$PREV_JOB_ID" ]] && qgmx_args+=(-Hold_jid "$PREV_JOB_ID")
 

@@ -22,7 +22,7 @@ BOX_Y="${BOX_Y:-6}"
 BOX_Z="${BOX_Z:-6}"
 
 USE_QGMX="${USE_QGMX:-0}"
-NPROCS="${NPROCS:-1}"
+GMX_NPROCS="${GMX_NPROCS:-1}"
 QGMX="${QGMX:-qgmx}"
 
 die() {
@@ -79,7 +79,7 @@ write_provenance() {
     printf 'GMX:      %s\n' "$GMX"
     printf 'BOX:      %s x %s x %s nm\n' "$BOX_X" "$BOX_Y" "$BOX_Z"
     printf 'ION_CONC: %s\n' "${ION_CONC:-0.15}"
-    printf 'USE_QGMX: %s  NPROCS: %s\n' "$USE_QGMX" "$NPROCS"
+    printf 'USE_QGMX: %s  GMX_NPROCS: %s\n' "$USE_QGMX" "$GMX_NPROCS"
     printf 'gmx:      %s\n' "$("$GMX" --version 2>&1 | grep -m1 'GROMACS version' || echo 'unknown')"
     printf 'python:   %s\n' "$(python3 --version 2>&1 || echo 'unknown')"
     printf '\n'
