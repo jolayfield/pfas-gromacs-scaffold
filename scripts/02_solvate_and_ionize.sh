@@ -15,7 +15,7 @@ solvated="$BUILD_DIR/system_solvated.gro"
 ions_tpr="$BUILD_DIR/ions.tpr"
 with_ions="$BUILD_DIR/system_ions.gro"
 
-cd "$ROOT_DIR/topology"
+cd "$(dirname "$TOPOLOGY")"
 "$GMX" solvate -cp "$BUILD_DIR/system_unsolvated.gro" -cs "$WATER_MODEL_GRO" -o "$solvated" -p "$TOPOLOGY"
 "$GMX" grompp -f "$ROOT_DIR/mdp/ions.mdp" -c "$solvated" -p "$TOPOLOGY" -o "$ions_tpr" -maxwarn "${MAXWARN:-0}"
 printf 'SOL\n' | "$GMX" genion -s "$ions_tpr" -o "$with_ions" -p "$TOPOLOGY" -pname "$PNAME" -nname "$NNAME" -neutral -conc "$ION_CONC"

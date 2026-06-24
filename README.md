@@ -40,3 +40,17 @@ GMX=gmx scripts/03_run_md_pipeline.sh
 The example `inputs/molecules.csv` intentionally points to placeholder files. Replace those rows before running a real system.
 
 For PFAS plus mixed organic solutes, the recommended default is Packmol for solute placement, then GROMACS for water and ions.
+
+## Running multiple simulations
+
+Use `sim_init.sh` to create an isolated directory for each system, then pass `SIM_DIR` to scope all scripts to that directory:
+
+```bash
+scripts/sim_init.sh pfoa-water-001
+# Edit simulations/pfoa-water-001/inputs/molecules.csv and add LigParGen files.
+SIM_DIR=simulations/pfoa-water-001 scripts/01_build_with_packmol.sh
+SIM_DIR=simulations/pfoa-water-001 scripts/02_solvate_and_ionize.sh
+SIM_DIR=simulations/pfoa-water-001 scripts/03_run_md_pipeline.sh
+```
+
+Each simulation directory is self-contained: its `inputs/`, `topology/`, `build/`, and `runs/` subdirectories are independent from every other simulation. See `docs/multiple-simulations-management-plan.md` for naming conventions and layout details.

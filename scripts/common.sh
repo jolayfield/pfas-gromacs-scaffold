@@ -5,10 +5,17 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 GMX="${GMX:-gmx}"
-MOLECULES_CSV="${MOLECULES_CSV:-$ROOT_DIR/inputs/molecules.csv}"
-TOPOLOGY="$ROOT_DIR/topology/system.top"
-BUILD_DIR="$ROOT_DIR/build"
-RUNS_DIR="$ROOT_DIR/runs"
+
+# SIM_DIR: path to the active simulation directory. Defaults to the project root
+# so all existing single-simulation usage is unchanged. Set it to a per-system
+# directory (e.g. simulations/pfoa-water-001) to keep each run fully isolated.
+SIM_DIR="${SIM_DIR:-$ROOT_DIR}"
+[[ "$SIM_DIR" = /* ]] || SIM_DIR="$ROOT_DIR/$SIM_DIR"
+
+MOLECULES_CSV="${MOLECULES_CSV:-$SIM_DIR/inputs/molecules.csv}"
+TOPOLOGY="${TOPOLOGY:-$SIM_DIR/topology/system.top}"
+BUILD_DIR="${BUILD_DIR:-$SIM_DIR/build}"
+RUNS_DIR="${RUNS_DIR:-$SIM_DIR/runs}"
 
 BOX_X="${BOX_X:-6}"
 BOX_Y="${BOX_Y:-6}"
@@ -28,7 +35,7 @@ require_command() {
 }
 
 ensure_dirs() {
-  mkdir -p "$BUILD_DIR" "$RUNS_DIR"/{em,nvt,npt,production}
+  mkdir -p "$BUILD_DIR" "$RUNS_DIR"/{em,nvt,npt,production} "$SIM_DIR/logs"
 }
 
 csv_rows() {

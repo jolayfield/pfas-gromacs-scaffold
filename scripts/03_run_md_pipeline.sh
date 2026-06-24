@@ -6,7 +6,7 @@ require_command "$GMX"
 require_file "$TOPOLOGY"
 require_file "$BUILD_DIR/system_ions.gro"
 
-cd "$ROOT_DIR/topology"
+cd "$(dirname "$TOPOLOGY")"
 
 run_stage() {
   local stage="$1"
