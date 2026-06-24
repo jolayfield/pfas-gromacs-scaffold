@@ -196,17 +196,19 @@ Keeping each simulation self-contained prevents:
 
 It also makes simulations easier to archive, compare, rerun, and share.
 
-## Near-Term Script Improvement
+## Using SIM_DIR
 
-The current scripts can be adapted to this layout by adding a `SIM_DIR` variable:
+The scripts support `SIM_DIR` directly. Use `sim_init.sh` to create a new simulation directory, then pass `SIM_DIR` to scope all scripts to it:
 
 ```bash
+scripts/sim_init.sh pfoa-water-001
+# Place LigParGen files and edit molecules.csv in simulations/pfoa-water-001/inputs/
 SIM_DIR=simulations/pfoa-water-001 scripts/01_build_with_packmol.sh
 SIM_DIR=simulations/pfoa-water-001 scripts/02_solvate_and_ionize.sh
 SIM_DIR=simulations/pfoa-water-001 scripts/03_run_md_pipeline.sh
 ```
 
-With that change, the scripts should read:
+When `SIM_DIR` is set, the scripts read:
 
 ```text
 $SIM_DIR/inputs/molecules.csv
@@ -218,7 +220,8 @@ and write:
 ```text
 $SIM_DIR/build/
 $SIM_DIR/runs/
+$SIM_DIR/logs/
 ```
 
-Until the scripts are updated for `SIM_DIR`, treat the root-level scaffold as a template or scratch system and manually move/copy it into a per-simulation folder before running a second system.
+When `SIM_DIR` is not set, all paths default to the project root — existing single-simulation usage is unchanged.
 

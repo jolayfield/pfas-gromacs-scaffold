@@ -16,10 +16,10 @@ Start here:
 scripts/01_build_with_packmol.sh
 ```
 
-or:
+or (alternative, GROMACS-only path):
 
 ```bash
-scripts/01_build_with_insert_molecules.sh
+scripts/01_alt_build_with_insert_molecules.sh
 ```
 
 Then solvate, ionize, minimize, equilibrate, and run short production:
@@ -37,6 +37,32 @@ ION_CONC=0.10 scripts/02_solvate_and_ionize.sh
 GMX=gmx scripts/03_run_md_pipeline.sh
 ```
 
+All supported variables are documented in `.env.template`. Copy it to `.env`, uncomment any overrides, and `source .env` before running — or export variables directly on the command line as shown above.
+
 The example `inputs/molecules.csv` intentionally points to placeholder files. Replace those rows before running a real system.
 
 For PFAS plus mixed organic solutes, the recommended default is Packmol for solute placement, then GROMACS for water and ions.
+
+## Running multiple simulations
+
+Use `sim_init.sh` to create an isolated directory for each system, then pass `SIM_DIR` to scope all scripts to that directory:
+
+```bash
+scripts/sim_init.sh pfoa-water-001
+# Edit simulations/pfoa-water-001/inputs/molecules.csv and add LigParGen files.
+SIM_DIR=simulations/pfoa-water-001 scripts/01_build_with_packmol.sh
+SIM_DIR=simulations/pfoa-water-001 scripts/02_solvate_and_ionize.sh
+SIM_DIR=simulations/pfoa-water-001 scripts/03_run_md_pipeline.sh
+```
+
+Each simulation directory is self-contained: its `inputs/`, `topology/`, `build/`, and `runs/` subdirectories are independent from every other simulation. See `docs/multiple-simulations-management-plan.md` for naming conventions and layout details.
+
+## Running on an HPC cluster
+
+Set `USE_QGMX=1` to submit MD stages through the `qgmx` cluster wrapper instead of calling `gmx grompp` + `gmx mdrun` directly. `NPROCS` controls the `-nt` argument passed to `qgmx`.
+
+```bash
+USE_QGMX=1 NPROCS=8 SIM_DIR=simulations/pfoa-water-001 scripts/03_run_md_pipeline.sh
+```
+
+With `USE_QGMX=0` (the default), all stages run locally via standard GROMACS commands.

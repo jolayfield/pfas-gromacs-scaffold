@@ -42,7 +42,7 @@ scripts/
   common.sh
   validate_gromacs_inputs.py
   01_build_with_packmol.sh
-  01_build_with_insert_molecules.sh
+  01_alt_build_with_insert_molecules.sh
   02_solvate_and_ionize.sh
   03_run_md_pipeline.sh
 
@@ -114,14 +114,14 @@ BOX_X=8 BOX_Y=8 BOX_Z=8 scripts/01_build_with_packmol.sh
 
 ## Build Path B: `gmx insert-molecules`
 
-Use `scripts/01_build_with_insert_molecules.sh` for a GROMACS-only build path. It inserts molecules sequentially into a box.
+Use `scripts/01_alt_build_with_insert_molecules.sh` for a GROMACS-only build path. It inserts molecules sequentially into a box.
 
 This path is simpler to run but can struggle with dense systems or complex mixtures. For difficult packing, use Packmol.
 
 Example:
 
 ```bash
-BOX_X=8 BOX_Y=8 BOX_Z=8 scripts/01_build_with_insert_molecules.sh
+BOX_X=8 BOX_Y=8 BOX_Z=8 scripts/01_alt_build_with_insert_molecules.sh
 ```
 
 ## Solvation And Ionization

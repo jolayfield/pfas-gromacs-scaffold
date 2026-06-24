@@ -2,6 +2,7 @@
 source "$(dirname "$0")/common.sh"
 
 ensure_dirs
+write_provenance
 require_command "$GMX"
 require_file "$MOLECULES_CSV"
 
@@ -16,9 +17,9 @@ csv_rows | while IFS=, read -r name resname gro itp count charge; do
   next="$BUILD_DIR/insert_${index}_${name}.gro"
   if [[ "$index" -eq 1 ]]; then
     "$GMX" insert-molecules -box "$BOX_X" "$BOX_Y" "$BOX_Z" \
-      -ci "$ROOT_DIR/$gro" -nmol "$count" -o "$next"
+      -ci "$SIM_DIR/$gro" -nmol "$count" -o "$next"
   else
-    "$GMX" insert-molecules -f "$current" -ci "$ROOT_DIR/$gro" -nmol "$count" -o "$next"
+    "$GMX" insert-molecules -f "$current" -ci "$SIM_DIR/$gro" -nmol "$count" -o "$next"
   fi
   current="$next"
   cp "$current" "$BUILD_DIR/system_unsolvated.gro"

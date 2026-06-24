@@ -18,6 +18,7 @@ rcoulomb    = 1.0
 rvdw        = 1.0
 coulombtype = PME
 pbc         = xyz
+DispCorr    = EnerPres
 
 tcoupl      = V-rescale
 tc-grps     = System

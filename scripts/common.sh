@@ -5,14 +5,25 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 GMX="${GMX:-gmx}"
-MOLECULES_CSV="${MOLECULES_CSV:-$ROOT_DIR/inputs/molecules.csv}"
-TOPOLOGY="$ROOT_DIR/topology/system.top"
-BUILD_DIR="$ROOT_DIR/build"
-RUNS_DIR="$ROOT_DIR/runs"
+
+# SIM_DIR: path to the active simulation directory. Defaults to the project root
+# so all existing single-simulation usage is unchanged. Set it to a per-system
+# directory (e.g. simulations/pfoa-water-001) to keep each run fully isolated.
+SIM_DIR="${SIM_DIR:-$ROOT_DIR}"
+[[ "$SIM_DIR" = /* ]] || SIM_DIR="$ROOT_DIR/$SIM_DIR"
+
+MOLECULES_CSV="${MOLECULES_CSV:-$SIM_DIR/inputs/molecules.csv}"
+TOPOLOGY="${TOPOLOGY:-$SIM_DIR/topology/system.top}"
+BUILD_DIR="${BUILD_DIR:-$SIM_DIR/build}"
+RUNS_DIR="${RUNS_DIR:-$SIM_DIR/runs}"
 
 BOX_X="${BOX_X:-6}"
 BOX_Y="${BOX_Y:-6}"
 BOX_Z="${BOX_Z:-6}"
+
+USE_QGMX="${USE_QGMX:-0}"
+NPROCS="${NPROCS:-1}"
+QGMX="${QGMX:-qgmx}"
 
 die() {
   printf 'ERROR: %s\n' "$*" >&2
@@ -28,7 +39,7 @@ require_command() {
 }
 
 ensure_dirs() {
-  mkdir -p "$BUILD_DIR" "$RUNS_DIR"/{em,nvt,npt,production}
+  mkdir -p "$BUILD_DIR" "$RUNS_DIR"/{em,nvt,npt,production} "$SIM_DIR/logs"
 }
 
 csv_rows() {
@@ -57,6 +68,22 @@ write_topology_from_csv() {
       printf '%-10s %s\n' "$name" "$count"
     done
   } > "$TOPOLOGY"
+}
+
+write_provenance() {
+  local log_file="$SIM_DIR/sim.log"
+  {
+    printf '=== %s ===\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    printf 'script:   %s\n' "$0"
+    printf 'SIM_DIR:  %s\n' "$SIM_DIR"
+    printf 'GMX:      %s\n' "$GMX"
+    printf 'BOX:      %s x %s x %s nm\n' "$BOX_X" "$BOX_Y" "$BOX_Z"
+    printf 'ION_CONC: %s\n' "${ION_CONC:-0.15}"
+    printf 'USE_QGMX: %s  NPROCS: %s\n' "$USE_QGMX" "$NPROCS"
+    printf 'gmx:      %s\n' "$("$GMX" --version 2>&1 | grep -m1 'GROMACS version' || echo 'unknown')"
+    printf 'python:   %s\n' "$(python3 --version 2>&1 || echo 'unknown')"
+    printf '\n'
+  } >> "$log_file"
 }
 
 append_or_replace_molecule_count() {

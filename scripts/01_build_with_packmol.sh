@@ -5,6 +5,7 @@ PACKMOL="${PACKMOL:-packmol}"
 PACKMOL_TOLERANCE="${PACKMOL_TOLERANCE:-2.0}"
 
 ensure_dirs
+write_provenance
 require_command "$GMX"
 require_command "$PACKMOL"
 require_file "$MOLECULES_CSV"
@@ -24,7 +25,7 @@ unsolvated_gro="$BUILD_DIR/system_unsolvated.gro"
   csv_rows | while IFS=, read -r name resname gro itp count charge; do
     [[ -n "${name:-}" ]] || continue
     molecule_pdb="$BUILD_DIR/${name}.pdb"
-    "$GMX" editconf -f "$ROOT_DIR/$gro" -o "$molecule_pdb" >/dev/null 2>&1
+    "$GMX" editconf -f "$SIM_DIR/$gro" -o "$molecule_pdb" >/dev/null 2>&1
     printf 'structure %s\n' "$molecule_pdb"
     printf '  number %s\n' "$count"
     printf '  inside box 0. 0. 0. %.3f %.3f %.3f\n' \
